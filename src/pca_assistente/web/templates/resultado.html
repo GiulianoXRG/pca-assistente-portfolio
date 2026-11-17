@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% set lt = pr.leitura %}{% set res = pr.resultado %}{% set m = res.matriz %}
+{% block titulo %}Resultado {{ lt.grupo }}/{{ lt.ano }}{% endblock %}
+{% block corpo %}
+<div class="cab-pag">
+  <div><h1>Grupo {{ lt.grupo }} · {{ lt.ano }}</h1>
+    <div class="sub">{{ lt.busca.linhas|length }} requisições na busca · {{ lt.lidas|length }} lidas ·
+      {{ m.linhas|length }} códigos · {{ m.colunas|length }} unidades</div></div>
+  <div class="acoes">
+    {% if pr.gravado_em %}
+      <span class="badge" data-tom="ok">Gravado às {{ pr.gravado_em.strftime('%H:%M') }}</span>
+      {% if pr.sid is xlsx %}<span class="mono peq">Arquivo: {{ pr.sid }}</span>
+      {% else %}<a class="btn btn-pri" target="_blank" href="https://docs.google.com/spreadsheets/d/{{ pr.sid }}/edit">Abrir a planilha</a>{% endif %}
+    {% elif pr.plano %}
+      <button class="btn btn-ok btn-lg" id="bt-gravar" type="button">Gravar na planilha</button>
+    {% endif %}
+  </div>
+</div>
+
+{% if pr.erro_planilha %}
+<div class="alerta" data-tom="aten"><div class="t"><b>Só prévia</b>{{ pr.erro_planilha }}
+  <a href="/configuracoes">Configurações</a></div></div>
+{% endif %}
+<div id="gravacao" class="card" hidden><div class="corpo"><div class="prog indet"><i></i></div></div><pre class="log" id="log" style="height:140px"></pre></div>
+
+<div class="sec"><h2>Conferências</h2>
+{% if not res.avisos %}
+  <div class="alerta" data-tom="ok"><div class="t"><b>Tudo certo</b>Somas, grupo, catálogo e busca conferem.</div></div>
+{% else %}
+  {% if graves %}<div class="alerta" data-tom="perigo"><div class="t"><b>{{ graves|length }} ponto(s) para olhar antes de gravar</b>
+    <ul class="lista">{% for a in graves %}<li>{{ a.texto }}</li>{% endfor %}</ul></div></div>{% endif %}
+  {% set leves = res.avisos|rejectattr('grave')|list %}
+  {% if leves %}<details class="dobra card" {% if not graves %}open{% endif %}><summary>Avisos <span class="cont">{{ leves|length }}</span></summary>
+    <div class="corpo"><ul class="lista">{% for a in leves %}<li>{{ a.texto }}</li>{% endfor %}</ul></div></details>{% endif %}
+{% endif %}
+</div>
+
+{% if pr.plano %}
+<div class="sec"><h2>O que vai mudar na planilha</h2>
+<div class="card"><div class="corpo"><ul class="lista">
+  {% for x in pr.plano.resumo %}<li>{{ x }}</li>{% endfor %}
+  {% for x in pr.plano.alertas %}<li><b>{{ x }}</b></li>{% endfor %}
+  <li class="mut">Antes de gravar o app guarda uma cópia oculta das abas {{ pr.aba }} e REQ (mantém as 3 últimas).</li>
+</ul></div></div></div>
+{% endif %}
+
+<div class="sec"><h2>Requisições</h2>
+<div class="card"><div class="tabela"><table class="tabela-compacta">
+<thead><tr><th>Data</th><th>Requisição</th><th>Unidade</th><th>Status</th><th class="n">Valor</th><th>Situação</th></tr></thead>
+<tbody>{% for x in reqs %}<tr>
+  <td class="nw">{{ x.r.data.strftime('%d/%m/%Y') }}</td><td class="nw">{{ x.r.requisicao }}</td><td>{{ x.r.unidade }}</td>
+  <td>{{ x.r.status }}</td><td class="n">{{ x.r.valor|brl }}</td>
+  <td><span class="badge" data-tom="{{ x.tom }}">{{ x.sit }}</span></td></tr>{% endfor %}
+</tbody></table></div></div></div>
+
+<div class="sec"><h2>Totais por unidade</h2>
+<div class="card"><div class="tabela"><table class="tabela-compacta">
+<thead><tr><th>Coluna</th><th>Requisições</th><th class="n">Valor das requisições</th><th class="n">Pelo preço do catálogo</th></tr></thead>
+<tbody>{% for c in m.todas %}{% set t = res.totais.get(c.nome) %}<tr>
+  <td><b>{{ c.nome }}</b></td>
+  <td class="peq">{% if c.partes %}{% for p in c.partes %}{{ p.nome }} {{ p.numeros|join(', ') }}{% if not loop.last %}; {% endif %}{% endfor %}{% else %}{{ c.numeros|join(', ') }}{% endif %}</td>
+  <td class="n">{{ t[1]|brl if t }}</td><td class="n">{{ t[0]|brl if t }}</td></tr>{% endfor %}
+</tbody></table></div></div></div>
+
+<div class="sec"><h2>Prévia da matriz ({{ pr.aba }})</h2>
+<div class="card"><div class="tabela" style="max-height:560px;overflow:auto"><table class="tabela-compacta">
+<thead><tr><th>Código</th><th>Denominação</th><th>Unid.</th>{% for c in m.todas %}<th class="n" title="{{ c.cabecalho }}">{{ c.nome }}</th>{% endfor %}<th class="n">Total</th></tr></thead>
+<tbody>{% for ln in m.linhas %}<tr>
+  <td class="mono">{{ ln.codigo }}</td><td>{{ ln.denominacao }}</td><td class="peq">{{ ln.unid_med }}</td>
+  {% for c in m.todas %}<td class="n">{{ ln.qtds.get(c.nome)|qtd }}</td>{% endfor %}
+  <td class="n"><b>{{ ln.qtds.values()|sum|qtd }}</b></td></tr>{% endfor %}
+</tbody></table></div></div></div>
+
+{% if pr.plano and not pr.gravado_em %}
+<dialog class="dlg" id="dlg-gravar"><form method="dialog">
+  <div class="corpo"><h2>Gravar na planilha do grupo {{ lt.grupo }}?</h2>
+    <ul class="lista">{% for x in pr.plano.resumo %}<li>{{ x }}</li>{% endfor %}</ul>
+    {% if graves %}<p style="margin-top:10px;color:var(--perigo)"><b>Há {{ graves|length }} ponto(s) para olhar nas conferências.</b></p>{% endif %}
+    <p class="mut peq" style="margin-top:10px">Uma cópia de segurança das abas é feita antes. Rodar de novo refaz {{ pr.aba }} e as linhas de {{ lt.ano }} da REQ.</p></div>
+  <div class="rod"><button value="nao" class="btn">Cancelar</button><button value="sim" class="btn btn-ok" id="bt-confirmar">Gravar</button></div>
+</form></dialog>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script>
+const bt = document.getElementById('bt-gravar'), dlg = document.getElementById('dlg-gravar');
+if (bt) bt.addEventListener('click', () => dlg.showModal());
+if (dlg) dlg.addEventListener('close', async () => {
+  if (dlg.returnValue !== 'sim') return;
+  const r = await PCA.post('/gravar');
+  if (!r.ok) { PCA.toast(r.erro, 'perigo'); return; }
+  bt.disabled = true; document.getElementById('gravacao').hidden = false;
+  PCA.acompanhar({aoTerminar: e => { if (!e.erro) location.reload(); }});
+});
+</script>
+{% endblock %}

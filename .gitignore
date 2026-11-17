@@ -1,0 +1,20 @@
+# Dados reais (SIPAC, planilhas, credenciais): NUNCA vão para o git
+dados/
+*.html
+!tests/fixtures/*.html
+!src/pca_assistente/web/templates/*.html
+*.json
+!.claude/launch.json
+*.xlsx
+*.csv
+.env
+CLAUDE.local.md
+
+# Python / build
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+*.egg-info/
+build/
+dist/

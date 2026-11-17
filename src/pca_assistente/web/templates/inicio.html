@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block titulo %}Início{% endblock %}
+{% block corpo %}
+<div class="cab-pag"><div><h1>Montar a planilha do PCA</h1>
+  <div class="sub">Busca as requisições do grupo no SIPAC, confere e mostra a prévia antes de gravar.</div></div></div>
+
+<div class="card"><div class="corpo">
+<form id="form-buscar" class="linha" style="gap:16px;align-items:flex-end">
+  <div><span class="rotulo">Grupo de material</span>
+    <input name="grupo" list="historico" required inputmode="numeric" pattern="[0-9]+" placeholder="ex.: 3010"
+      value="{{ cfg.historico[0] if cfg.historico else '' }}" style="width:140px">
+    <datalist id="historico">{% for g in cfg.historico %}<option value="{{ g }}">{% endfor %}</datalist></div>
+  <div><span class="rotulo">Ano da coleta</span>
+    <input name="ano" type="number" required min="2020" max="2100" value="{{ ano }}" style="width:100px"></div>
+  <button class="btn btn-pri btn-lg" id="bt-buscar" type="submit">Buscar no SIPAC</button>
+  <button class="btn btn-perigo" id="bt-parar" type="button" hidden>Parar</button>
+  <span class="espaco"></span>
+  <span id="planilha-grupo" class="peq mut"></span>
+</form>
+</div></div>
+
+<div class="card" id="andamento">
+  <div class="cab"><h2>Andamento</h2><span id="tarefa-nome" class="mut peq"></span></div>
+  <div class="corpo"><div class="prog" id="prog" hidden><i></i></div>
+    <div id="fim" class="linha" style="margin-top:10px" hidden><a class="btn btn-pri" href="/resultado">Ver o resultado</a></div>
+  </div>
+  <pre class="log" id="log" aria-live="polite"></pre>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+const planilhas = {{ cfg.planilhas|tojson }};
+const campo = document.querySelector('[name=grupo]'), info = document.getElementById('planilha-grupo');
+function mostrarPlanilha(){ const g = campo.value.trim();
+  info.innerHTML = !g ? '' : planilhas[g] ? 'Planilha do grupo configurada ✔'
+    : 'Grupo sem planilha: só a prévia. <a href="/configuracoes">Configurar</a>'; }
+campo.addEventListener('input', mostrarPlanilha); mostrarPlanilha();
+document.getElementById('form-buscar').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  const r = await PCA.post('/buscar', new FormData(ev.target));
+  if (r.ok) PCA.toast('Buscando no SIPAC…'); else PCA.toast(r.erro, 'perigo');
+});
+document.getElementById('bt-parar').addEventListener('click', () => PCA.post('/parar'));
+PCA.acompanhar();
+</script>
+{% endblock %}

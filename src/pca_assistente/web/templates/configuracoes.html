@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block titulo %}Configurações{% endblock %}
+{% block corpo %}
+{% if msg %}<div class="alerta" data-tom="{{ tom }}" style="margin-bottom:16px"><div class="t">{{ msg }}</div></div>{% endif %}
+
+<div class="sec"><h2>1. Chrome e login no SIPAC</h2>
+<div class="card"><div class="corpo"><div class="passos">
+  <div class="passo" {% if sit.chrome %}data-tom="ok"{% endif %}><div><b>Chrome do assistente aberto</b>
+    <div class="mut peq">{% if sit.chrome %}Aberto.{% else %}Fechado: abra pelo atalho “PCA assistente” na Área de Trabalho.{% endif %}
+      É uma janela do Chrome separada, só do assistente (porta {{ porta_cdp }}).</div></div></div>
+  <div class="passo" {% if sit.sipac and not sit.login %}data-tom="ok"{% endif %}><div><b>Login no SIPAC</b>
+    <div class="mut peq">{% if sit.login %}<span style="color:var(--aten)">Há uma tela de login aberta: faça login nessa janela do Chrome.</span>
+      {% elif sit.sipac %}Aba do SIPAC aberta.{% else %}Abra o SIPAC nessa janela do Chrome e faça login com seu usuário.{% endif %}
+      O app nunca pede nem digita a sua senha.</div></div></div>
+  <div class="passo"><div><b>Buscar</b><div class="mut peq">Na tela Início, informe o grupo e o ano e clique em “Buscar no SIPAC”.</div></div></div>
+</div></div></div></div>
+
+<div class="sec"><h2>2. Conta Google</h2>
+<div class="card"><div class="corpo">
+  <p>{{ conta }}</p>
+  {% if email and cfg.forma_google != 'oauth' %}
+  <p class="linha"><span class="rotulo" style="margin:0">E-mail para compartilhar as planilhas (Editor):</span>
+    <code class="mono" id="email-servico">{{ email }}</code>
+    <button type="button" class="btn btn-sm" onclick="navigator.clipboard.writeText('{{ email }}');PCA.toast('E-mail copiado')">Copiar</button></p>
+  {% endif %}
+  <form method="post" action="/config/google" enctype="multipart/form-data" class="linha" style="gap:14px;margin-top:10px">
+    <label><input type="radio" name="forma" value="servico" {% if cfg.forma_google != 'oauth' %}checked{% endif %}> Conta de serviço (recomendado)</label>
+    <label><input type="radio" name="forma" value="oauth" {% if cfg.forma_google == 'oauth' %}checked{% endif %}> Minha conta Google</label>
+    <input type="file" name="chave" accept=".json,application/json">
+    <button class="btn">Guardar</button>
+  </form>
+  <p class="mut peq" style="margin-top:8px">O arquivo fica só neste computador, em {{ pasta }}.</p>
+  {% if cfg.forma_google == 'oauth' and tem_oauth %}
+  <form method="post" action="/config/conectar" style="margin-top:8px"><button class="btn btn-pri">Conectar minha conta Google</button></form>
+  {% endif %}
+</div></div></div>
+
+<div class="sec"><h2>3. Planilha de cada grupo</h2>
+<div class="card">
+  <div class="tabela"><table class="tabela-compacta"><thead><tr><th>Grupo</th><th>Planilha</th><th></th></tr></thead><tbody>
+  {% for g, sid in cfg.planilhas.items() %}<tr><td><b>{{ g }}</b></td>
+    <td>{% if sid is xlsx %}<span class="mono">{{ sid }}</span> <span class="badge sem">arquivo .xlsx</span>{% else %}<a target="_blank" href="https://docs.google.com/spreadsheets/d/{{ sid }}/edit">abrir</a>{% endif %}</td>
+    <td class="acao"><form method="post" action="/config/testar" style="display:inline"><input type="hidden" name="grupo" value="{{ g }}"><button class="btn btn-sm">Testar acesso</button></form>
+      <form method="post" action="/config/planilha" style="display:inline"><input type="hidden" name="grupo" value="{{ g }}"><input type="hidden" name="link" value=""><button class="btn btn-sm btn-perigo">Remover</button></form></td></tr>
+  {% else %}<tr><td colspan="3" class="mut">Nenhuma planilha ainda.</td></tr>{% endfor %}
+  </tbody></table></div>
+  <div class="rod"><form method="post" action="/config/planilha" class="linha">
+    <input name="grupo" placeholder="Grupo (ex.: 3010)" required style="width:150px" inputmode="numeric">
+    <input name="link" placeholder="Link da planilha do Google (ou caminho de um arquivo .xlsx para teste)" required style="flex:1;min-width:280px">
+    <button class="btn btn-pri">Guardar</button></form>
+    <p class="mut peq" style="margin-top:6px">A planilha deve ser uma cópia do MODELO (abas REQ, MAT25, MAT26…, CATÁLOGO).</p></div>
+</div></div>
+
+<div class="grade grade-2">
+<div class="sec"><h2>4. Mapa de unidades</h2>
+<div class="card"><form method="post" action="/config/mapa"><div class="corpo">
+  <p class="mut peq">Uma linha por sigla do SIPAC: <code>SIGLA = NOME DA COLUNA</code>. A ordem aqui é a ordem das colunas na MAT.
+    Sigla nova sem mapa usa a própria sigla (o app avisa).</p>
+  <textarea name="mapa" rows="12" class="mono">{{ mapa_txt }}</textarea></div>
+  <div class="rod"><button class="btn btn-pri">Guardar mapa</button></div></form></div></div>
+
+<div class="sec"><h2>5. Regras (decisões pendentes)</h2>
+<div class="card"><form method="post" action="/config/regras"><div class="corpo">
+  <span class="rotulo">Entram na MAT (na REQ ficam como OK)</span>
+  <div class="linha" style="margin-bottom:12px">{% for s in status %}<label><input type="checkbox" name="na_mat" value="{{ s }}" {% if s in cfg.na_mat %}checked{% endif %}> {{ s }}</label>{% endfor %}</div>
+  <span class="rotulo">Ficam fora da REQ</span>
+  <div class="linha" style="margin-bottom:12px">{% for s in status %}<label><input type="checkbox" name="fora_req" value="{{ s }}" {% if s in cfg.fora_req %}checked{% endif %}> {{ s }}</label>{% endfor %}</div>
+  <p class="mut peq">Os demais status ficam na REQ como NÃO.</p>
+  <span class="rotulo">Ordem das linhas na MAT</span>
+  <select name="ordem"><option value="alfabetica" {% if cfg.ordem != 'leitura' %}selected{% endif %}>Alfabética (denominação)</option>
+    <option value="leitura" {% if cfg.ordem == 'leitura' %}selected{% endif %}>Ordem das requisições</option></select>
+  <p class="mut peq" style="margin-top:10px">Mais de 10 unidades: as excedentes vão para DIVERSOS e o app avisa (a QTD não soma a DIVERSOS).
+    Preço diferente do catálogo: o app só avisa.</p></div>
+  <div class="rod"><button class="btn btn-pri">Guardar regras</button></div></form></div></div>
+</div>
+{% endblock %}

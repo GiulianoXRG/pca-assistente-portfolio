@@ -1,0 +1,65 @@
+<html><head><meta charset="utf-8"><title>SIPAC - Sistema Integrado de Patrimônio, Administração e Contratos</title></head>
+<body>
+<!-- Fixture FICTÍCIA no formato da busca de requisições (buscaListaReq.do). Nenhum dado real. -->
+<form name="formBusca" action="/sipac/buscaListaReq.do" method="post">
+<table class="formulario">
+<tr><th>Status:</th><td>
+<select name="status">
+  <option value="0">-- TODOS --</option>
+  <option value="1">CADASTRADA</option>
+  <option value="2">ENVIADA</option>
+  <option value="3">EM AQUISIÇÃO</option>
+  <option value="4">ESTORNADA</option>
+  <option value="5">CANCELADA</option>
+</select></td></tr>
+</table>
+</form>
+
+<table class="listagem">
+<caption>Requisições Encontradas</caption>
+<thead><tr>
+  <th></th><th>Data</th><th>Requisição</th><th>Unidade Requisitante</th><th>Unidade de Custo</th><th>Grupo</th>
+  <th>Tipo</th><th>Almoxarifado</th><th>Status</th><th>Usuário</th><th style="text-align:right">Valor</th><th></th>
+</tr></thead>
+<tbody>
+<tr class="linhaPar">
+  <form action="/sipac/acompanharReqMaterial.do" method="post" target="_blank">
+  <td><input type="hidden" name="id" value="900101"><input type="hidden" name="acao" value="200">
+      <input type="image" src="/sipac/img/view.gif" title="Visualizar"></td>
+  </form>
+  <td>05/03/2026</td><td>9001/2026</td><td>DOD/CCS</td><td>DOD/CCS</td><td>3010</td>
+  <td>REQUISIÇÃO PARA PARTICIPAR DE UM NOVO REGISTRO DE PREÇOS</td><td>ALMOXARIFADO CENTRAL</td>
+  <td>ENVIADA</td><td>SERVIDOR FICTICIO UM</td><td style="text-align:right">R$ 1.234,50</td>
+  <td><a href="/sipac/populaCadReqMaterial.do?idReq=900101"><img src="/sipac/img/alterar.gif"></a></td>
+</tr>
+<tr class="linhaImpar">
+  <form action="/sipac/acompanharReqMaterial.do" method="post" target="_blank">
+  <td><input type="hidden" value="900102" name="id"><input type="image" src="/sipac/img/view.gif"></td>
+  </form>
+  <td>12/02/2026</td><td>9002/2026</td><td>EAJ</td><td>EAJ</td><td>3010</td>
+  <td>REQUISIÇÃO PARA PARTICIPAR DE UM NOVO REGISTRO DE PREÇOS</td><td>ALMOXARIFADO CENTRAL</td>
+  <td>ENVIADA</td><td>SERVIDOR FICTICIO DOIS</td><td style="text-align:right">R$ 19,11</td>
+  <td><a href="/sipac/populaCadReqMaterial.do?idReq=900102"><img src="/sipac/img/alterar.gif"></a></td>
+</tr>
+<tr class="linhaPar">
+  <form action="/sipac/acompanharReqMaterial.do" method="post" target="_blank">
+  <td><input type="hidden" name="id" value="900103"><input type="image" src="/sipac/img/view.gif"></td>
+  </form>
+  <td>20/01/2026</td><td>9003/2026</td><td>DAS/PROGESP</td><td>DAS/PROGESP</td><td>3010</td>
+  <td>REQUISIÇÃO PARA PARTICIPAR DE UM NOVO REGISTRO DE PREÇOS</td><td>ALMOXARIFADO CENTRAL</td>
+  <td>EM AQUISIÇÃO</td><td>SERVIDOR FICTICIO TRÊS</td><td style="text-align:right">R$ 57,36</td>
+  <td><a href="/sipac/populaCadReqMaterial.do?idReq=900103"><img src="/sipac/img/alterar.gif"></a></td>
+</tr>
+<tr class="linhaImpar">
+  <form action="/sipac/acompanharReqMaterial.do" method="post" target="_blank">
+  <td><input type="hidden" name="id" value="900104"><input type="image" src="/sipac/img/view.gif"></td>
+  </form>
+  <td>15/01/2026</td><td>9004/2026</td><td>ALM-FACISA</td><td>ALM-FACISA</td><td>3010</td>
+  <td>REQUISIÇÃO PARA PARTICIPAR DE UM NOVO REGISTRO DE PREÇOS</td><td>ALMOXARIFADO CENTRAL</td>
+  <td>ESTORNADA</td><td>SERVIDOR FICTICIO QUATRO</td><td style="text-align:right">R$ 2.000,00</td>
+  <td><a href="/sipac/populaCadReqMaterial.do?idReq=900104"><img src="/sipac/img/alterar.gif"></a></td>
+</tr>
+<tr><td colspan="12" style="text-align:center"><b>Requisições: 4 | Valor Total: R$ 3.310,97</b></td></tr>
+</tbody>
+</table>
+</body></html>

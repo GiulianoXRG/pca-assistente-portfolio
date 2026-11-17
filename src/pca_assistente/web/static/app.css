@@ -1,0 +1,290 @@
+/* PCA assistente — design system copiado do sipac-assistente (tokens, componentes, layout). */
+
+/* ---------- tokens ---------- */
+:root {
+  --fonte: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "Cascadia Mono", Consolas, ui-monospace, monospace;
+  --bg: #f5f6f8; --bg-2: #eceef2; --card: #ffffff; --tx: #1b1f27; --tx-2: #5b6573; --tx-3: #8a93a1;
+  --bd: #e2e5ea; --bd-2: #cfd4db;
+  --ac: #1f5fa8; --ac-h: #194f8c; --ac-tx: #ffffff; --ac-bg: #e8f0fa;
+  --ok: #1a7f4b; --ok-bg: #e6f4ec; --aten: #b26a00; --aten-bg: #fdf3e2; --perigo: #c0392b; --perigo-bg: #fbe9e7;
+  --info: var(--ac); --info-bg: var(--ac-bg); --neutro: #6b7480; --neutro-bg: #eef0f3;
+  --sombra: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .04);
+  --sombra-2: 0 8px 24px rgba(16, 24, 40, .12);
+  --r: 8px; --r-lg: 12px; --lado: 232px; --topo: 56px;
+  --foco: 0 0 0 3px color-mix(in srgb, var(--ac) 30%, transparent);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0f1216; --bg-2: #161a20; --card: #181c23; --tx: #e7eaef;
+  --tx-2: #9aa4b2; --tx-3: #6e7886; --bd: #262c36; --bd-2: #343b47; --ac: #6ea8f0; --ac-h: #8bbaf5; --ac-tx: #0b1220; --ac-bg: #1a2a40;
+  --ok: #4cc38a; --ok-bg: #12301f; --aten: #e6a54a; --aten-bg: #3a2a10; --perigo: #ff7b72; --perigo-bg: #3b1d1b;
+  --neutro: #8c96a4; --neutro-bg: #232932; --sombra: none; --sombra-2: 0 8px 24px rgba(0, 0, 0, .5); color-scheme: dark } }
+:root[data-theme="dark"] { --bg: #0f1216; --bg-2: #161a20; --card: #181c23; --tx: #e7eaef; --tx-2: #9aa4b2; --tx-3: #6e7886;
+  --bd: #262c36; --bd-2: #343b47; --ac: #6ea8f0; --ac-h: #8bbaf5; --ac-tx: #0b1220; --ac-bg: #1a2a40; --ok: #4cc38a; --ok-bg: #12301f;
+  --aten: #e6a54a; --aten-bg: #3a2a10; --perigo: #ff7b72; --perigo-bg: #3b1d1b; --neutro: #8c96a4; --neutro-bg: #232932;
+  --sombra: none; --sombra-2: 0 8px 24px rgba(0, 0, 0, .5); color-scheme: dark }
+
+/* ---------- base ---------- */
+*, *::before, *::after { box-sizing: border-box }
+html { height: 100% }
+body { margin: 0; min-height: 100%; font: 14px/1.5 var(--fonte); color: var(--tx); background: var(--bg);
+  -webkit-font-smoothing: antialiased }
+a { color: var(--ac); text-decoration: none } a:hover { text-decoration: underline }
+h1, h2, h3 { margin: 0; letter-spacing: -.01em; font-weight: 650 }
+h1 { font-size: 22px } h2 { font-size: 15px } h3 { font-size: 13.5px }
+p { margin: 0 0 8px } p:last-child { margin-bottom: 0 }
+.mut { color: var(--tx-2) } .mut-2 { color: var(--tx-3) } .peq { font-size: 12.5px } .num { font-variant-numeric: tabular-nums }
+.nw { white-space: nowrap } .dir { text-align: right } .cen { text-align: center }
+.mono { font-family: var(--mono); font-size: 12px }
+[hidden] { display: none !important }
+.visual-oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
+kbd { font: 11px var(--mono); border: 1px solid var(--bd-2); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px;
+  background: var(--bg); color: var(--tx-2) }
+hr { border: 0; border-top: 1px solid var(--bd); margin: 14px 0 }
+
+/* ---------- layout ---------- */
+.app { display: grid; grid-template-columns: var(--lado) 1fr; min-height: 100vh }
+.lado { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; background: var(--card);
+  border-right: 1px solid var(--bd); padding: 14px 12px }
+.marca { display: flex; align-items: center; gap: 10px; padding: 6px 8px 18px; color: var(--tx); font-weight: 650; font-size: 14.5px }
+.marca .logo { width: 28px; height: 28px; border-radius: 8px; background: var(--ac); color: var(--ac-tx); display: grid;
+  place-items: center; font-size: 13px; font-weight: 700; letter-spacing: 0 }
+.marca small { display: block; font-weight: 400; font-size: 11.5px; color: var(--tx-2) }
+.menu { display: flex; flex-direction: column; gap: 2px }
+.menu a { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--r); color: var(--tx-2);
+  font-weight: 500; transition: background .12s, color .12s }
+.menu a svg { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round }
+.menu a:hover { background: var(--bg-2); color: var(--tx); text-decoration: none }
+.menu a.on { background: var(--ac-bg); color: var(--ac) }
+.menu a .cont { margin-left: auto; font-size: 11.5px; font-weight: 600; padding: 1px 7px; border-radius: 999px;
+  background: var(--bg-2); color: var(--tx-2); font-variant-numeric: tabular-nums }
+.menu a.on .cont { background: color-mix(in srgb, var(--ac) 18%, transparent); color: var(--ac) }
+.menu a .cont[data-tom="perigo"] { background: var(--perigo-bg); color: var(--perigo) }
+.lado .rod { margin-top: auto; padding: 10px 8px 0; font-size: 11.5px; color: var(--tx-3); line-height: 1.4 }
+.conteudo { min-width: 0; display: flex; flex-direction: column }
+.topo { position: sticky; top: 0; z-index: 20; height: var(--topo); display: flex; align-items: center; gap: 12px;
+  padding: 0 24px; background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--bd) }
+.topo h1 { font-size: 16px; font-weight: 620; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.topo .busca { position: relative }
+.topo .busca input { width: 240px; padding-left: 32px }
+.topo .busca svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; stroke: var(--tx-3);
+  fill: none; stroke-width: 2; pointer-events: none }
+.topo .busca kbd { position: absolute; right: 8px; top: 50%; transform: translateY(-50%) }
+main { width: 100%; max-width: 1280px; margin: 0 auto; padding: 24px 24px 56px; flex: 1 }
+.cab-pag { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px }
+.cab-pag h1 { font-size: 22px } .cab-pag .sub { color: var(--tx-2); margin-top: 2px; font-size: 13px }
+.cab-pag .acoes { display: flex; gap: 8px; flex-wrap: wrap; align-items: center }
+.grade { display: grid; gap: 16px } .grade-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+.grade-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) } .grade-auto { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) }
+.grade > * { min-width: 0 }
+.sec { margin-bottom: 24px } .sec > h2 { margin-bottom: 10px; display: flex; align-items: center; gap: 8px }
+.sec > h2 .cont { font-weight: 400; color: var(--tx-2) }
+.linha { display: flex; align-items: center; gap: 8px; flex-wrap: wrap }
+.espaco { flex: 1 }
+
+/* ---------- status (pills no topo) ---------- */
+.pill { display: inline-flex; align-items: center; gap: 7px; padding: 4px 11px; border-radius: 999px; font-size: 12.5px;
+  border: 1px solid var(--bd); background: var(--card); color: var(--tx-2); white-space: nowrap; max-width: 320px; overflow: hidden; text-overflow: ellipsis }
+.pill a { color: inherit }
+.pill[data-tom="ok"] { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 35%, var(--bd)) }
+.pill[data-tom="perigo"] { color: var(--perigo); border-color: color-mix(in srgb, var(--perigo) 40%, var(--bd)) }
+.pill[data-tom="aten"] { color: var(--aten); border-color: color-mix(in srgb, var(--aten) 45%, var(--bd)) }
+.pill[data-tom="info"] { color: var(--ac); border-color: color-mix(in srgb, var(--ac) 40%, var(--bd)) }
+.luz { width: 8px; height: 8px; border-radius: 50%; background: var(--neutro); flex: none }
+.luz[data-tom="ok"] { background: var(--ok); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 22%, transparent) }
+.luz[data-tom="perigo"] { background: var(--perigo); box-shadow: 0 0 0 3px color-mix(in srgb, var(--perigo) 22%, transparent) }
+.luz[data-tom="aten"] { background: var(--aten); box-shadow: 0 0 0 3px color-mix(in srgb, var(--aten) 22%, transparent) }
+.luz[data-tom="info"] { background: var(--ac); animation: pulsa 1.4s ease-in-out infinite }
+@keyframes pulsa { 50% { opacity: .35 } }
+
+/* ---------- botões ---------- */
+.btn, button { font: inherit; font-weight: 550; padding: 7px 14px; border: 1px solid var(--bd-2); border-radius: var(--r);
+  background: var(--card); color: var(--tx); cursor: pointer; display: inline-flex; align-items: center; gap: 7px; line-height: 1.3;
+  transition: background .12s, border-color .12s, box-shadow .12s, transform .05s; white-space: nowrap; text-decoration: none }
+.btn:hover, button:hover { border-color: var(--tx-3); background: var(--bg-2); text-decoration: none }
+.btn:active, button:active { transform: translateY(1px) }
+.btn:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible, summary:focus-visible {
+  outline: none; box-shadow: var(--foco); border-color: var(--ac) }
+.btn-pri { background: var(--ac); border-color: var(--ac); color: var(--ac-tx) } .btn-pri:hover { background: var(--ac-h); border-color: var(--ac-h); color: var(--ac-tx) }
+.btn-ok { background: var(--ok); border-color: var(--ok); color: #fff } .btn-ok:hover { filter: brightness(1.08); background: var(--ok); color: #fff }
+.btn-perigo { color: var(--perigo); border-color: color-mix(in srgb, var(--perigo) 45%, var(--bd-2)) } .btn-perigo:hover { background: var(--perigo-bg); border-color: var(--perigo) }
+.btn-perigo.cheio { background: var(--perigo); color: #fff; border-color: var(--perigo) }
+.btn-ghost { border-color: transparent; background: transparent; color: var(--tx-2) } .btn-ghost:hover { background: var(--bg-2); color: var(--tx) }
+.btn-sm { padding: 4px 10px; font-size: 12.5px } .btn-lg { padding: 10px 20px; font-size: 15px }
+.btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round }
+.btn:disabled, button:disabled { opacity: .45; cursor: not-allowed; transform: none; filter: none }
+.btn.ok { color: var(--ok); border-color: var(--ok) }
+
+/* ---------- campos ---------- */
+input, select, textarea { font: inherit; padding: 7px 10px; border: 1px solid var(--bd-2); border-radius: var(--r); background: var(--card);
+  color: var(--tx); min-width: 0; transition: border-color .12s, box-shadow .12s }
+input::placeholder, textarea::placeholder { color: var(--tx-3) }
+input[type="number"] { width: 84px } input[type="checkbox"], input[type="radio"] { width: 16px; height: 16px; padding: 0; accent-color: var(--ac); margin: 0; vertical-align: -3px }
+select { padding-right: 28px; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a93a1' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat; background-position: right 9px center }
+textarea { resize: vertical; min-height: 72px; width: 100% }
+label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer }
+.rotulo { display: block; font-size: 12.5px; font-weight: 550; color: var(--tx-2); margin-bottom: 4px }
+.filtros { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px }
+.filtros select, .filtros input { padding: 6px 10px }
+.segmento { display: inline-flex; border: 1px solid var(--bd); border-radius: var(--r); background: var(--card); overflow: hidden }
+.segmento a, .segmento button { border: 0; border-radius: 0; padding: 5px 12px; font-size: 13px; color: var(--tx-2); background: transparent; font-weight: 500 }
+.segmento a:hover, .segmento button:hover { background: var(--bg-2); color: var(--tx) }
+.segmento a.on, .segmento button.on { background: var(--tx); color: var(--bg) }
+.segmento a + a, .segmento button + button { border-left: 1px solid var(--bd) }
+.chips { display: flex; gap: 6px; flex-wrap: wrap }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border: 1px solid var(--bd); border-radius: 999px; background: var(--card);
+  font-size: 12.5px; color: var(--tx); font-variant-numeric: tabular-nums }
+a.chip:hover { border-color: var(--ac); text-decoration: none } .chip.on { background: var(--tx); border-color: var(--tx); color: var(--bg) }
+.chip .n { color: var(--tx-2); font-size: 11.5px } .chip.on .n { color: inherit; opacity: .75 }
+
+/* ---------- badges / tags ---------- */
+.badge { display: inline-flex; align-items: center; gap: 5px; padding: 1px 9px; border-radius: 999px; font-size: 12px; font-weight: 550;
+  white-space: nowrap; background: var(--neutro-bg); color: var(--neutro); line-height: 1.6 }
+.badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .8 }
+.badge.sem::before { display: none }
+.badge[data-tom="ok"] { background: var(--ok-bg); color: var(--ok) } .badge[data-tom="info"] { background: var(--ac-bg); color: var(--ac) }
+.badge[data-tom="perigo"] { background: var(--perigo-bg); color: var(--perigo) } .badge[data-tom="aten"] { background: var(--aten-bg); color: var(--aten) }
+
+/* ---------- cards ---------- */
+.card { background: var(--card); border: 1px solid var(--bd); border-radius: var(--r-lg); box-shadow: var(--sombra); margin-bottom: 16px }
+.card > .corpo, .card.simples { padding: 16px 18px }
+.card > .cab { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 13px 18px; border-bottom: 1px solid var(--bd) }
+.card > .cab h2 { flex: 1; min-width: 160px } .card > .cab .cont { color: var(--tx-2); font-weight: 400 }
+.card > .rod { padding: 12px 18px; border-top: 1px solid var(--bd); background: var(--bg); border-radius: 0 0 var(--r-lg) var(--r-lg) }
+.card .vazio { padding: 26px 18px; color: var(--tx-2); text-align: center; font-size: 13.5px }
+.card[data-tom="ok"] { border-color: color-mix(in srgb, var(--ok) 45%, var(--bd)) }
+.card[data-tom="perigo"] { border-color: color-mix(in srgb, var(--perigo) 50%, var(--bd)) }
+.card[data-tom="aten"] { border-color: color-mix(in srgb, var(--aten) 50%, var(--bd)) }
+.card[data-tom="info"] { border-color: color-mix(in srgb, var(--ac) 45%, var(--bd)) }
+
+/* ---------- indicadores ---------- */
+.inds { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 20px }
+.ind { display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; background: var(--card); border: 1px solid var(--bd); border-radius: var(--r-lg);
+  color: var(--tx); position: relative; transition: border-color .12s, transform .12s; box-shadow: var(--sombra) }
+a.ind:hover { border-color: var(--bd-2); text-decoration: none; transform: translateY(-1px) }
+.ind .n { font-size: 30px; font-weight: 680; line-height: 1.1; letter-spacing: -.03em; font-variant-numeric: tabular-nums; color: var(--cor, var(--tx)) }
+.ind .r { font-weight: 600; font-size: 13px } .ind .d { color: var(--tx-2); font-size: 12px; line-height: 1.4 }
+.ind.zero .n { color: var(--tx-3) }
+.ind[data-tom="info"] { --cor: var(--ac) } .ind[data-tom="ok"] { --cor: var(--ok) } .ind[data-tom="perigo"] { --cor: var(--perigo) } .ind[data-tom="aten"] { --cor: var(--aten) }
+
+/* ---------- tabelas ---------- */
+.tabela { overflow-x: auto } .card > .tabela table { border-radius: 0 0 var(--r-lg) var(--r-lg) }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--bd); vertical-align: middle }
+.card th:first-child, .card td:first-child { padding-left: 18px } .card th:last-child, .card td:last-child { padding-right: 18px }
+tbody tr:last-child td { border-bottom: 0 }
+tbody tr:hover td { background: color-mix(in srgb, var(--ac) 4%, transparent) }
+th { color: var(--tx-2); font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; background: var(--card) }
+th a { color: inherit } th a.on { color: var(--ac) } th a .seta { font-size: 10px; margin-left: 3px }
+td.n, th.n { text-align: right; white-space: nowrap } td.acao { text-align: right; white-space: nowrap }
+tr.sem td { color: var(--tx-3) } td .sub { display: block; color: var(--tx-2); font-size: 12px }
+.tabela-compacta th, .tabela-compacta td { padding: 6px 10px }
+
+/* ---------- lista de definição (ficha) ---------- */
+.campo { display: grid; grid-template-columns: 150px 1fr auto; gap: 10px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--bd) }
+.campo:last-child { border-bottom: 0 } .campo b { color: var(--tx-2); font-weight: 550; font-size: 12.5px }
+.campo span { word-break: break-word; font-variant-numeric: tabular-nums } .campo .copiar { opacity: .35; transition: opacity .12s }
+.campo:hover .copiar, .campo .copiar:focus-visible { opacity: 1 }
+
+/* ---------- alertas ---------- */
+.alerta { display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; border: 1px solid var(--bd); border-left: 4px solid var(--neutro);
+  border-radius: var(--r); background: var(--card); margin-bottom: 16px }
+.alerta svg { width: 18px; height: 18px; flex: none; margin-top: 1px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round }
+.alerta b { display: block; margin-bottom: 2px } .alerta .t { flex: 1; min-width: 0 }
+.alerta[data-tom="perigo"] { border-left-color: var(--perigo); background: var(--perigo-bg); color: var(--tx) } .alerta[data-tom="perigo"] svg, .alerta[data-tom="perigo"] b { color: var(--perigo) }
+.alerta[data-tom="aten"] { border-left-color: var(--aten); background: var(--aten-bg) } .alerta[data-tom="aten"] svg, .alerta[data-tom="aten"] b { color: var(--aten) }
+.alerta[data-tom="ok"] { border-left-color: var(--ok); background: var(--ok-bg) } .alerta[data-tom="ok"] svg, .alerta[data-tom="ok"] b { color: var(--ok) }
+.alerta[data-tom="info"] { border-left-color: var(--ac); background: var(--ac-bg) } .alerta[data-tom="info"] svg, .alerta[data-tom="info"] b { color: var(--ac) }
+
+/* ---------- progresso ---------- */
+.prog { height: 6px; border-radius: 99px; background: color-mix(in srgb, var(--ac) 14%, transparent); overflow: hidden }
+.prog i { display: block; height: 100%; width: 0; border-radius: 99px; background: var(--ac); transition: width .4s }
+.prog.indet i { width: 30%; animation: vai 1.3s ease-in-out infinite }
+.prog[data-tom="ok"] i { background: var(--ok) } .prog[data-tom="perigo"] i { background: var(--perigo) } .prog[data-tom="aten"] i { background: var(--aten) }
+@keyframes vai { 0% { margin-left: -30% } 100% { margin-left: 100% } }
+
+/* ---------- abas ---------- */
+.abas { display: flex; gap: 2px; border-bottom: 1px solid var(--bd); margin-bottom: 16px; overflow-x: auto }
+.abas button { border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: transparent; color: var(--tx-2); padding: 8px 12px; margin-bottom: -1px; font-weight: 550 }
+.abas button:hover { color: var(--tx); background: transparent } .abas button.on { color: var(--ac); border-bottom-color: var(--ac) }
+.abas button .cont { font-size: 11.5px; color: var(--tx-3); margin-left: 4px }
+
+/* ---------- details ---------- */
+details.dobra > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 8px; font-weight: 600; padding: 12px 18px; user-select: none }
+details.dobra > summary::-webkit-details-marker { display: none }
+details.dobra > summary::before { content: ""; width: 7px; height: 7px; border-right: 2px solid var(--tx-3); border-bottom: 2px solid var(--tx-3); transform: rotate(-45deg); transition: transform .15s; margin-right: 2px }
+details.dobra[open] > summary::before { transform: rotate(45deg) }
+details.dobra > summary .cont { font-weight: 400; color: var(--tx-2); font-size: 13px }
+details.dobra.card > summary + * { border-top: 1px solid var(--bd) }
+
+/* ---------- diálogo ---------- */
+dialog.dlg { border: 1px solid var(--bd); border-radius: var(--r-lg); background: var(--card); color: var(--tx); padding: 0; width: min(520px, calc(100vw - 32px));
+  box-shadow: var(--sombra-2) }
+dialog.dlg::backdrop { background: rgba(10, 14, 20, .45); backdrop-filter: blur(2px) }
+dialog.dlg .corpo { padding: 20px 22px 8px } dialog.dlg h2 { font-size: 16px; margin-bottom: 8px }
+dialog.dlg .rod { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 22px 18px }
+dialog.dlg .lista { margin: 8px 0 0; padding-left: 18px } dialog.dlg .lista li { margin: 2px 0 }
+
+/* ---------- toast ---------- */
+#toasts { position: fixed; right: 20px; bottom: 20px; z-index: 50; display: flex; flex-direction: column; gap: 8px; max-width: 420px }
+.toast { padding: 10px 14px; border-radius: var(--r); background: var(--tx); color: var(--bg); box-shadow: var(--sombra-2); font-size: 13.5px;
+  animation: sobe .18s ease-out; display: flex; gap: 10px; align-items: center }
+.toast[data-tom="perigo"] { background: var(--perigo); color: #fff } .toast[data-tom="ok"] { background: var(--ok); color: #fff }
+@keyframes sobe { from { opacity: 0; transform: translateY(6px) } }
+
+/* ---------- registro técnico ---------- */
+.log { font: 12px/1.6 var(--mono); white-space: pre-wrap; background: #0f1218; color: #d6dde8; padding: 12px 18px; height: 340px; overflow: auto; margin: 0;
+  border-radius: 0 0 var(--r-lg) var(--r-lg) }
+
+/* ---------- passos (primeiro acesso / etapas) ---------- */
+.passos { counter-reset: p; display: grid; gap: 10px } .passo { display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: start }
+.passo::before { counter-increment: p; content: counter(p); width: 28px; height: 28px; border-radius: 50%; background: var(--ac-bg); color: var(--ac); font-weight: 650;
+  display: grid; place-items: center; font-size: 13px } .passo b { display: block } .passo .d { color: var(--tx-2); font-size: 13px }
+.passo[data-tom="ok"]::before { background: var(--ok-bg); color: var(--ok); content: "✓" }
+.etapas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--bd); border-radius: var(--r-lg); background: var(--card); overflow: hidden; margin-bottom: 20px }
+.etapa { padding: 14px 16px; border-left: 1px solid var(--bd); color: var(--tx); display: flex; flex-direction: column; gap: 2px; position: relative }
+.etapa:first-child { border-left: 0 } a.etapa:hover { background: var(--bg-2); text-decoration: none }
+.etapa .k { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--tx-3); font-weight: 600 }
+.etapa .r { font-weight: 620 } .etapa .n { font-size: 24px; font-weight: 680; letter-spacing: -.02em; line-height: 1.1; font-variant-numeric: tabular-nums; color: var(--cor, var(--tx)) }
+.etapa .d { color: var(--tx-2); font-size: 12px } .etapa.zero .n { color: var(--tx-3) }
+.etapa[data-tom="info"] { --cor: var(--ac) } .etapa[data-tom="ok"] { --cor: var(--ok) } .etapa[data-tom="perigo"] { --cor: var(--perigo) } .etapa[data-tom="aten"] { --cor: var(--aten) }
+
+/* ---------- pendências (cartões explicados) ---------- */
+.pend { padding: 14px 18px; border-bottom: 1px solid var(--bd); display: grid; grid-template-columns: 1fr auto; gap: 8px 16px }
+.pend:last-child { border-bottom: 0 } .pend h3 { font-size: 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap }
+.pend .exp { color: var(--tx-2); font-size: 13px; line-height: 1.5 } .pend .exp b { color: var(--tx); font-weight: 600 }
+.pend .fazer { margin-top: 4px; font-size: 13px } .pend .fazer b { color: var(--ac) }
+.pend .lado-d { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; min-width: 200px }
+.pend .motivo { font-size: 12px; color: var(--tx-3); font-family: var(--mono); margin-top: 4px; word-break: break-word }
+.pend .rev { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end }
+.pend .rev input { width: 180px } .pend.esperando { background: color-mix(in srgb, var(--aten) 4%, transparent) }
+
+/* ---------- herói da rotina ---------- */
+.heroi { display: grid; grid-template-columns: minmax(280px, 380px) 1fr; border: 1px solid var(--bd); border-radius: var(--r-lg); overflow: hidden; margin-bottom: 20px; background: var(--card) }
+.heroi .rotina { padding: 22px 24px; display: flex; flex-direction: column; gap: 10px; color: #fff;
+  background: linear-gradient(145deg, var(--heroi-a, #17457d) 0%, var(--heroi-b, #2a6cc4) 100%) }
+.heroi .rotina b { font-size: 18px; letter-spacing: -.01em } .heroi .rotina p { font-size: 13px; opacity: .9; flex: 1 }
+.heroi .rotina ol { margin: 0; padding-left: 18px; font-size: 12.5px; opacity: .92 }
+.heroi .rotina .btn { align-self: flex-start; background: #fff; color: #1f5fa8; border: 0; box-shadow: 0 2px 8px rgba(0, 0, 0, .18) }
+.heroi .rotina .btn:hover { background: #f1f5fb; color: #194f8c }
+.heroi .lado-b { padding: 18px 22px; display: flex; flex-direction: column; gap: 6px } .heroi .lado-b h3 { color: var(--tx-2); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .05em }
+.prox { display: flex; gap: 12px; align-items: center; padding: 12px 14px; border: 1px solid var(--bd); border-radius: var(--r); background: var(--bg) }
+.prox b { display: block } .prox .d { color: var(--tx-2); font-size: 12.5px } .prox .btn { margin-left: auto }
+
+/* ---------- atividade ---------- */
+.ativ { list-style: none; margin: 0; padding: 0 } .ativ li { display: grid; grid-template-columns: 54px 1fr; gap: 12px; padding: 9px 18px; border-bottom: 1px solid var(--bd); font-size: 13px }
+.ativ li:last-child { border-bottom: 0 } .ativ .q { color: var(--tx-3); font-size: 12px; font-variant-numeric: tabular-nums; padding-top: 1px }
+.ativ .t b { font-weight: 600 } .ativ .t span { display: block; color: var(--tx-2); font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+
+/* ---------- responsivo ---------- */
+@media (max-width: 900px) {
+  .app { display: block } .lado { position: sticky; height: auto; flex-direction: row; align-items: center; flex-wrap: wrap; gap: 4px; padding: 8px 10px; z-index: 30 }
+  .marca { padding: 4px 6px } .marca small { display: none } .menu { flex-direction: row; flex-wrap: wrap } .menu a { padding: 6px 9px } .menu a span.t { display: none }
+  .lado .rod { display: none } main { padding: 16px } .topo { padding: 0 16px } .topo .busca input { width: 150px } .topo h1 { display: none }
+  .grade-2, .grade-3 { grid-template-columns: 1fr } .heroi { grid-template-columns: 1fr } .etapas { grid-template-columns: repeat(2, 1fr) } .etapa:nth-child(n+3) { border-top: 1px solid var(--bd) }
+  .pend { grid-template-columns: 1fr } .pend .lado-d { align-items: flex-start } .campo { grid-template-columns: 1fr auto } .campo b { grid-column: 1 / -1 }
+}
+@media (max-width: 560px) { .inds { grid-template-columns: repeat(2, 1fr) } .etapas { grid-template-columns: 1fr } .etapa { border-left: 0; border-top: 1px solid var(--bd) } }
+@media print { .lado, .topo, #toasts { display: none } .app { display: block } main { padding: 0 } .card { box-shadow: none; break-inside: avoid } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important } }
